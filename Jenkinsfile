@@ -14,28 +14,28 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Cloning project from Git...'
-                git credentialsId: 'your-git-credentials-id', url: 'https://github.com/akashv13/JenkinTarus.git'
+                git branch: 'main', url: 'https://github.com/akashv13/JenkinTarus.git'
             }
         }
 
         stage('Build') {
             steps {
                 echo 'Running Maven Clean and Compile...'
-                sh 'mvn clean compile'
+                bat 'mvn clean compile'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running Unit Tests...'
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
 
         stage('Package') {
             steps {
                 echo 'Packaging the application...'
-                sh 'mvn package'
+                bat 'mvn package'
             }
         }
 
