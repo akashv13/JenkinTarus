@@ -1,20 +1,66 @@
 pipeline {
     agent any
+
+    tools {
+        maven 'Maven 3.9.11'     
+        jdk 'jdk-17.0.3.1'            
+    }
+
+    environment {
+        MAVEN_OPTS = "-Xmx1024m"
+    }
+
     stages {
+        stage('Checkout') {
+            steps {
+                echo 'Cloning project from Git...'
+                git credentialsId: 'your-git-credentials-id', url: 'https://github.com/akashv13/JenkinTarus.git'
+            }
+        }
+
         stage('Build') {
             steps {
-                echo "Building the Project............"
+                echo 'Running Maven Clean and Compile...'
+                sh 'mvn clean compile'
             }
         }
+
         stage('Test') {
             steps {
-                echo "Testing the Project............"
+                echo 'Running Unit Tests...'
+                sh 'mvn test'
             }
         }
-        stage('Deploy') {
+
+        stage('Package') {
             steps {
-                echo "Deploying the Project............"
+                echo 'Packaging the application...'
+                sh 'mvn package'
             }
+        }
+
+        stage('Deploy (Optional)') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo 'Deploying application...'
+                // your deployment command here
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up...'
+        }
+
+        success {
+            echo 'Build succeeded!'
+        }
+
+        failure {
+            echo 'Build failed.'
         }
     }
 }
